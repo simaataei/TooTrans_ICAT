@@ -1,5 +1,5 @@
 import torch
-from Classes import Protein_encoder, Label_encoder
+from Classes import Protein_encoder, Label_encoder, protein_dataset
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -64,11 +64,11 @@ dataset = read_data(Dataset)
 
 
 # load PLM
-model_protein = Protein_encoder().to(device)
+#model_protein = Protein_encoder().to(device)
 
 
 # encode sequences using PLM ProtBERT
-sequence_output = encode(model_protein, [tup[0] for tup in dataset], False)
+#sequence_output = encode(model_protein, [tup[0] for tup in dataset], False)
 
 
 # read label descriptions
@@ -105,8 +105,8 @@ for i in range(0, dataset_series):
     partition["test"] = ['id-' + str(indx) for indx in test_indx]
 
     # generators
-    training_set = Dataset(partition['train'])
+    training_set = protein_dataset(partition['test'])
     training_generator = torch.utils.data.DataLoader(training_set, **params)
 
-    test_set = Dataset(partition['test'])
+    test_set = protein_dataset(partition['test'])
     test_generator = torch.utils.data.DataLoader(test_set, **params)

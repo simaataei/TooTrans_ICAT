@@ -37,29 +37,31 @@ class Label_encoder(nn.Module):
         return cls_rep
 
 
+class protein_dataset(torch.utils.data.Dataset):
 
-
-class Dataset(torch.utils.data.Dataset):
-#Characterizes a dataset for PyTorch
-  def __init__(self, list_IDs):
+    def __init__(self, list_IDs):
+        self.aa = 1
         #Initialization
         #self.labels = list_labels
         self.list_IDs = list_IDs
 
-  def __len__(self):
-        #Denotes the total number of samples
+
+    def __len__(self):
+        # Denotes the total number of samples
         return len(self.list_IDs)
 
-  def __getitem__(self, index):
-        #Generates one sample of data
+    def __getitem__(self, index):
+        # Generates one sample of data
         # Select sample
-        ID = self.list_IDs[index]
+        for name in self.list_IDs:
+            if name == 'id-' + str(index):
+                ID = name
 
         # Load data and get label
-        X = torch.load('./data/Data/Data_encoded_pt' + ID + '.pt')
+        X = torch.load('./Data/Data_encoded_pt/' + ID + '.pt')
         y = torch.load('./data/Data/Data_encoded_pt' + ID + '_label.pt')
 
-        return X, y
+        return X
 
 
 class FeedforwardNeuralNetModel(nn.Module):

@@ -1,7 +1,6 @@
 import torch
 from Classes import Protein_encoder, Label_encoder, protein_dataset
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 
 
@@ -44,11 +43,6 @@ def encode(model, dataset, label):
     return sequence_output
 
 
-def split(dataset):
-    X = [tup[0] for tup in dataset]
-    y = [tup[1] for tup in dataset]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2)
-    return [X.index(i) for i in X_train], [X.index(i) for i in X_test]
 
 
 # CUDA for PyTorch
@@ -64,11 +58,11 @@ dataset = read_data(Dataset)
 
 
 # load PLM
-#model_protein = Protein_encoder().to(device)
+model_protein = Protein_encoder().to(device)
 
 
 # encode sequences using PLM ProtBERT
-#sequence_output = encode(model_protein, [tup[0] for tup in dataset], False)
+sequence_output = encode(model_protein, [tup[0] for tup in dataset], False)
 
 
 # read label descriptions
@@ -88,25 +82,3 @@ label_encoding = encode(model_label, term_description, True)
 # make datasets
 
 
-# number of the test/train random subsets to produce
-dataset_series = 5
-params = {'batch_size': 64,
-          'shuffle': True,
-          'num_workers': 6}
-max_epochs = 100
-
-for i in range(0, dataset_series):
-    train_indx, test_indx = split(dataset)
-
-
-    # partition test and train ids
-    partition = {}
-    partition["train"] = ['id-' + str(indx) for indx in train_indx]
-    partition["test"] = ['id-' + str(indx) for indx in test_indx]
-
-    # generators
-    training_set = protein_dataset(partition['test'])
-    training_generator = torch.utils.data.DataLoader(training_set, **params)
-
-    test_set = protein_dataset(partition['test'])
-    test_generator = torch.utils.data.DataLoader(test_set, **params)

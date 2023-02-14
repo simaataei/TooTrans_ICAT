@@ -1,5 +1,5 @@
 import torch
-from Classes import Protein_encoder, Label_encoder, protein_dataset
+from Classes import Protein_encoder, Label_encoder
 import pandas as pd
 
 

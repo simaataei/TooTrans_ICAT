@@ -71,7 +71,7 @@ class FeedforwardNeuralNetModel(nn.Module):
         self.fc1 = nn.Linear(input_dim, hidden_dim)
 
         # Non-linearity
-        self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU()
 
         # Linear function (readout)
         self.fc2 = nn.Linear(hidden_dim, output_dim)

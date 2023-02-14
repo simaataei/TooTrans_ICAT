@@ -1,4 +1,4 @@
-from Classes import protein_dataset
+from Classes import protein_dataset, FeedforwardNeuralNetModel
 from Data_prepration import dataset
 from sklearn.model_selection import train_test_split
 import torch, optuna
@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.optim as optim
 
-
+0
 
 
 def split(dataset):
@@ -69,9 +69,10 @@ def objective(trial):
         'optimizer': trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"]),
         'n_unit': trial.suggest_int("n_unit", 10, 100)
     }
-
-    model = build_model(params)
-
+    in_features = 1024
+    out_features = 768
+    # model = build_model(params)
+    model = FeedforwardNeuralNetModel(in_features, params['n_unit'], out_features)
     loss = train_and_evaluate(params, model)
 
     return loss
